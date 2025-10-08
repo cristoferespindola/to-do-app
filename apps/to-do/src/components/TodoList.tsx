@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useOptimistic } from 'react';
+import { useState, useOptimistic, useTransition, startTransition } from 'react';
 import { TToDo } from '@to-do/shared';
 import { TodoItem } from './TodoItem';
 
@@ -54,8 +54,9 @@ export function TodoList({ initialTodos }: TodoListProps) {
   };
 
   const handleDelete = async (id: number) => {
-    // Optimistic update
-    updateOptimisticTodos({ action: 'delete', todoId: id });
+    startTransition(() => {
+      updateOptimisticTodos({ action: 'delete', todoId: id });
+    });
 
     try {
       const response = await fetch(`http://localhost:3001/api/todos/${id}`, {
@@ -66,7 +67,6 @@ export function TodoList({ initialTodos }: TodoListProps) {
 
       setTodos(prev => prev.filter(todo => todo.id !== id));
     } catch (error) {
-      // Revert on error
       setTodos([...todos]);
       throw error;
     }
@@ -82,8 +82,8 @@ export function TodoList({ initialTodos }: TodoListProps) {
     <div className="max-w-2xl mx-auto p-6 space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">My Todo List</h1>
-        <p className="text-gray-600">Keep track of your daily tasks</p>
+        <h1 className="text-3xl font-bold text-white mb-2">My Todo List</h1>
+        <p className="text-white">Keep track of your daily tasks</p>
       </div>
 
       {/* Stats */}
