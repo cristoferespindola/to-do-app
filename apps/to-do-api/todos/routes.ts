@@ -1,16 +1,10 @@
 import express, { Request, Response } from 'express';
 import Todo from './model';
-import rateLimit from 'express-rate-limit';
-
+import createRateLimiter from '../helpers/limiter';
 
 const router = express.Router();
 
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, 
-    max: 100,
-});
-
-router.use(limiter);
+router.use(createRateLimiter());
 
 router.get('/todos', async (req: Request, res: Response) => {
     const todos = await Todo.findAll();
@@ -33,14 +27,12 @@ router.put('/todos/:id', async (req: Request, res: Response) => {
     const { title } = req.body;
 
     const todo = await Todo.findByPk(id);
-    res.json(todo);
 
     if (!todo) {
         return res.status(404).json({ error: 'Todo not found' });
     }
 
     await todo.update({ title });
-    await todo.save();
 
     res.json(todo);
 });
@@ -48,7 +40,6 @@ router.put('/todos/:id', async (req: Request, res: Response) => {
 router.delete('/todos/:id', async (req: Request, res: Response) => {
     const { id } = req.params;
     const todo = await Todo.findByPk(id);
-    res.json(todo);
 
     if (!todo) {
         return res.status(404).json({ error: 'Todo not found' });
