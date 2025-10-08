@@ -2,7 +2,6 @@ import express, { Request, Response } from 'express';
 import Todo from './model';
 import createRateLimiter from '../helpers/limiter';
 import { TToDoUpdate } from '@to-do/shared';
-import merge from 'lodash/merge';
 
 const router = express.Router();
 
@@ -34,9 +33,7 @@ router.put('/todos/:id', async (req: Request, res: Response) => {
     return res.status(404).json({ error: 'Todo not found' });
   }
 
-  const newTodo = merge(todo, body);
-
-  await todo.update(newTodo);
+  await todo.update(body);
 
   res.json(todo);
 });

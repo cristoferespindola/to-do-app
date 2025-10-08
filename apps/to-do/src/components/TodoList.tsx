@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useOptimistic, useTransition, startTransition } from 'react';
+import { useState, useOptimistic, startTransition } from 'react';
 import { TToDo } from '@to-do/shared';
 import { TodoItem } from './TodoItem';
+import { deleteTodo, toggleTodo } from '@/services/todos';
 
 type TodoListProps = {
   initialTodos: TToDo[];
@@ -32,22 +33,15 @@ export function TodoList({ initialTodos }: TodoListProps) {
   );
 
   const handleToggle = async (id: number, completed: boolean) => {
-    // Optimistic update
-    updateOptimisticTodos({ action: 'toggle', todoId: id, updates: { completed } });
+    startTransition(() => {
+      updateOptimisticTodos({ action: 'toggle', todoId: id, updates: { completed } });
+    });
 
     try {
-      const response = await fetch(`http://localhost:3001/api/todos/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ completed }),
-      });
+      const updatedTodo = await toggleTodo(id, completed);
 
-      if (!response.ok) throw new Error('Failed to update todo');
-
-      const updatedTodo = await response.json();
       setTodos(prev => prev.map(todo => (todo.id === id ? updatedTodo : todo)));
     } catch (error) {
-      // Revert on error
       setTodos([...todos]);
       throw error;
     }
@@ -59,11 +53,7 @@ export function TodoList({ initialTodos }: TodoListProps) {
     });
 
     try {
-      const response = await fetch(`http://localhost:3001/api/todos/${id}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) throw new Error('Failed to delete todo');
+      await deleteTodo(id);
 
       setTodos(prev => prev.filter(todo => todo.id !== id));
     } catch (error) {
@@ -80,13 +70,11 @@ export function TodoList({ initialTodos }: TodoListProps) {
 
   return (
     <div className="max-w-2xl mx-auto p-6 space-y-6">
-      {/* Header */}
       <div className="text-center">
         <h1 className="text-3xl font-bold text-white mb-2">My Todo List</h1>
         <p className="text-white">Keep track of your daily tasks</p>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-blue-50 rounded-lg p-4 text-center">
           <div className="text-2xl font-bold text-blue-600">{stats.total}</div>
@@ -102,7 +90,6 @@ export function TodoList({ initialTodos }: TodoListProps) {
         </div>
       </div>
 
-      {/* Todo List */}
       <div className="space-y-2">
         {optimisticTodos.length === 0 ? (
           <div className="text-center py-12">
