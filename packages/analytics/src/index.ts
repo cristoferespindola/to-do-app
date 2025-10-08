@@ -1,4 +1,4 @@
-// Core analytics
+
 export { 
   Analytics,
   initAnalytics, 
@@ -8,12 +8,10 @@ export {
   setUserProperties
 } from './lib/analytics';
 
-// Hooks
 export { useAnalytics } from './hooks/useAnalytics';
 export { usePageView } from './hooks/usePageView';
 export { useTrackEvent } from './hooks/useTrackEvent';
 
-// Types
 export type {
   AnalyticsConfig,
   AnalyticsEvent,
