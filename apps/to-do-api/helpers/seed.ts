@@ -1,4 +1,4 @@
-import Todo from '../todos/model';
+import Todo from '../routes/todos/model';
 
 const seed = async () => {
   await Todo.sync({ force: true });

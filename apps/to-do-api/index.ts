@@ -2,7 +2,7 @@ import 'dotenv/config';
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import seed from './helpers/seed';
-import todosRouter from './todos/routes';
+import todosRouter from './routes/todos/routes';
 
 const app = express();
 const port = 3001;

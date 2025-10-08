@@ -1,5 +1,5 @@
 import { DataTypes, Model, Optional } from 'sequelize';
-import { db } from '../db.js';
+import { db } from '../../db.js';
 import { TToDo } from '@to-do/shared';
 
 type TodoCreationAttributes = Optional<TToDo, 'id' | 'createdAt' | 'updatedAt' | 'completed'>;
