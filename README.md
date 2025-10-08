@@ -18,6 +18,7 @@ A modern, full-stack ToDo list application built with Next.js and Express in a m
 - 🚀 **Modern Stack**: Next.js 15 with App Router and Express 5
 - 💾 **PostgreSQL Database**: Reliable data persistence with Sequelize ORM
 - 🎨 **Modern UI**: Clean, responsive interface with Tailwind CSS 4
+- 📊 **Analytics**: Google Analytics 4 integration with custom hooks
 - 📦 **Workspace Management**: Yarn workspaces for efficient dependency management
 - ⚡ **Hot Reload**: Fast development with tsx and Next.js Turbopack
 - 🛡️ **Rate Limiting**: API protection with express-rate-limit
@@ -39,9 +40,17 @@ A modern, full-stack ToDo list application built with Next.js and Express in a m
 - **Dev Tools:** [tsx](https://github.com/esbuild-kit/tsx) for hot reload
 - **Security:** [express-rate-limit](https://github.com/express-rate-limit/express-rate-limit)
 
-### Shared (`packages/shared`)
+### Shared Packages
+
+#### `packages/shared`
 - **Purpose:** Shared TypeScript types and utilities
 - **Types:** `TToDo`, `TToDoCreate`, `TToDoUpdate`
+
+#### `packages/analytics`
+- **Purpose:** Google Analytics 4 integration
+- **Features:** React hooks, type-safe events, SSR support
+- **Hooks:** `usePageView`, `useAnalytics`, `useTrackEvent`
+- **Events:** Page views, custom todo events, user properties
 
 ### Build System
 - **Monorepo:** [Turborepo](https://turbo.build/)
@@ -107,6 +116,24 @@ DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=todo_db
 ```
+
+#### Frontend Configuration (Optional):
+
+For Google Analytics tracking, create a `.env.local` file in `apps/to-do/`:
+
+```bash
+cd apps/to-do
+cp .env.example .env.local
+```
+
+Edit `.env.local` with your Google Analytics Measurement ID:
+
+```plaintext
+# apps/to-do/.env.local
+NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+```
+
+> Get your Measurement ID from [Google Analytics](https://analytics.google.com/) → Admin → Data Streams → Web
 
 ### 5. Run the Development Servers
 
@@ -191,13 +218,18 @@ to-do-app/
 ├── apps/
 │   ├── to-do/                    # Next.js Frontend
 │   │   ├── src/
-│   │   │   └── app/
-│   │   │       ├── layout.tsx    # Root layout
-│   │   │       ├── page.tsx      # Home page
-│   │   │       └── globals.css   # Global styles
+│   │   │   ├── app/
+│   │   │   │   ├── layout.tsx    # Root layout with GA
+│   │   │   │   ├── page.tsx      # Home page
+│   │   │   │   └── globals.css   # Global styles
+│   │   │   └── components/
+│   │   │       ├── AnalyticsProvider.tsx  # Analytics init
+│   │   │       └── PageContainer.tsx      # Page tracking
 │   │   ├── package.json
 │   │   ├── tsconfig.json
-│   │   └── next.config.ts
+│   │   ├── next.config.ts
+│   │   ├── .env.local            # Local environment
+│   │   └── .env.example          # Environment template
 │   │
 │   └── to-do-api/                # Express Backend
 │       ├── todos/
@@ -209,17 +241,33 @@ to-do-app/
 │       ├── index.ts              # Express app entry
 │       ├── package.json
 │       ├── tsconfig.json
+│       ├── .env                  # Local environment
 │       ├── .env.example          # Environment template
 │       └── .gitignore
 │
 ├── packages/
-│   └── shared/                   # Shared Types Package
+│   ├── shared/                   # Shared Types Package
+│   │   ├── src/
+│   │   │   ├── types/
+│   │   │   │   └── todos.ts      # Todo type definitions
+│   │   │   └── index.ts          # Package exports
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   │
+│   └── analytics/                # Analytics Package
 │       ├── src/
+│       │   ├── lib/
+│       │   │   └── analytics.ts  # Core analytics client
+│       │   ├── hooks/
+│       │   │   ├── usePageView.ts      # Page view hook
+│       │   │   ├── useAnalytics.ts     # Analytics hook
+│       │   │   └── useTrackEvent.ts    # Event hook
 │       │   ├── types/
-│       │   │   └── todos.ts      # Todo type definitions
+│       │   │   └── index.ts      # Type definitions
 │       │   └── index.ts          # Package exports
 │       ├── package.json
-│       └── tsconfig.json
+│       ├── tsconfig.json
+│       └── README.md             # Analytics documentation
 │
 ├── package.json                  # Root workspace config
 ├── turbo.json                    # Turborepo configuration
@@ -227,9 +275,11 @@ to-do-app/
 └── README.md
 ```
 
-## Shared Types Package
+## Shared Packages
 
-The `@to-do/shared` package provides type-safe communication between frontend and backend:
+### `@to-do/shared` - Type Definitions
+
+Provides type-safe communication between frontend and backend:
 
 ```typescript
 // packages/shared/src/types/todos.ts
@@ -243,27 +293,55 @@ export type TToDo = {
 }
 
 export type TToDoCreate = Omit<TToDo, 'id' | 'createdAt' | 'updatedAt'>
-
 export type TToDoUpdate = Partial<TToDoCreate>
 ```
 
-### Usage Example:
+**Usage Example:**
 
-**Frontend:**
 ```typescript
+// Frontend
 import { TToDo } from '@to-do/shared';
-
 const todos = await response.json() as TToDo[];
-```
 
-**Backend:**
-```typescript
+// Backend
 import { TToDo } from '@to-do/shared';
-
 export const Todo = db.define<Model<TToDo, TodoCreationAttributes>>('Todo', {
   // ...
 });
 ```
+
+### `@to-do/analytics` - Google Analytics Integration
+
+Type-safe Google Analytics 4 integration with React hooks:
+
+```typescript
+// Automatic page view tracking
+import { PageContainer } from '@/components/PageContainer';
+
+export default function Page() {
+  return (
+    <PageContainer title="Home" path="/">
+      {/* Your content */}
+    </PageContainer>
+  );
+}
+
+// Manual event tracking
+import { useAnalytics, CustomEvent } from '@to-do/analytics';
+
+const { trackEvent } = useAnalytics();
+
+trackEvent(CustomEvent.TODO_CREATED, {
+  todo_id: 123,
+  todo_title: 'New Task',
+});
+```
+
+**Available Events:**
+- Standard: `PAGE_VIEW`, `CLICK`, `FORM_SUBMIT`, `SEARCH`, etc.
+- Custom: `TODO_CREATED`, `TODO_COMPLETED`, `TODO_DELETED`, `TODO_UPDATED`
+
+For detailed documentation, see [`packages/analytics/README.md`](packages/analytics/README.md).
 
 ## Development Commands
 
