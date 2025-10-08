@@ -12,7 +12,7 @@ export function usePageView(enabled = true, params?: PageViewParams) {
     if (!enabled) return;
 
     const analytics = getAnalytics();
-    
+
     if (analytics) {
       analytics.pageView(params);
     }

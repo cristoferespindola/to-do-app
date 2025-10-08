@@ -31,5 +31,4 @@ export const Todo = db.define<Model<TToDo, TodoCreationAttributes>>('Todo', {
   },
 });
 
-
 export default Todo;

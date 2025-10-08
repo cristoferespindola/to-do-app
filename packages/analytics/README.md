@@ -143,11 +143,7 @@ export default function TodoList() {
     });
   };
 
-  return (
-    <button onClick={() => handleCreateTodo('New Todo')}>
-      Create Todo
-    </button>
-  );
+  return <button onClick={() => handleCreateTodo('New Todo')}>Create Todo</button>;
 }
 ```
 
@@ -201,7 +197,7 @@ export default function SearchBar() {
     trackSearch({ search_term: query });
   };
 
-  return <input onChange={(e) => handleSearch(e.target.value)} />;
+  return <input onChange={e => handleSearch(e.target.value)} />;
 }
 ```
 
@@ -235,10 +231,12 @@ export default function UserProfile({ user }) {
 Automatically tracks page views.
 
 **Parameters:**
+
 - `enabled` (optional): Enable/disable tracking (default: `true`)
 - `params` (optional): Custom page view parameters
 
 **Example:**
+
 ```tsx
 usePageView(); // Basic usage
 usePageView(true, { page_title: 'Custom Title' }); // With params
@@ -250,11 +248,13 @@ usePageView(false); // Disabled
 Provides analytics tracking functions.
 
 **Returns:**
+
 - `trackEvent(event: AnalyticsEvent, params?: GTagEventParams)`: Track custom events
 - `setUserProperties(properties: Record<string, string | number | boolean>)`: Set user properties
 - `isInitialized: boolean`: Check if analytics is initialized
 
 **Example:**
+
 ```tsx
 const { trackEvent, setUserProperties } = useAnalytics();
 ```
@@ -264,12 +264,14 @@ const { trackEvent, setUserProperties } = useAnalytics();
 Creates a memoized event tracking function.
 
 **Parameters:**
+
 - `event`: The event name to track
 - `baseParams` (optional): Base parameters included with every call
 
 **Returns:** Memoized tracking function
 
 **Example:**
+
 ```tsx
 const trackClick = useTrackEvent('button_click', { category: 'navigation' });
 trackClick({ label: 'home' });
@@ -282,6 +284,7 @@ trackClick({ label: 'home' });
 Initialize the analytics instance.
 
 **Parameters:**
+
 - `config.measurementId`: Google Analytics measurement ID
 - `config.debug` (optional): Enable debug mode
 - `config.disabled` (optional): Disable analytics
@@ -303,6 +306,7 @@ Set user properties (convenience function).
 #### `GAEvent` (Enum)
 
 Standard Google Analytics events:
+
 - `PAGE_VIEW`
 - `CLICK`
 - `FORM_SUBMIT`
@@ -317,6 +321,7 @@ Standard Google Analytics events:
 #### `CustomEvent` (Enum)
 
 Application-specific events:
+
 - `TODO_CREATED`
 - `TODO_COMPLETED`
 - `TODO_DELETED`
@@ -330,7 +335,7 @@ type GTagEventParams = {
   event_label?: string;
   value?: number;
   [key: string]: string | number | boolean | undefined;
-}
+};
 ```
 
 #### `PageViewParams`
@@ -340,7 +345,7 @@ type PageViewParams = {
   page_title?: string;
   page_location?: string;
   page_path?: string;
-}
+};
 ```
 
 ## Best Practices
@@ -383,7 +388,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 
 // app/page.tsx
-'use client';
+('use client');
 
 import { usePageView, useAnalytics, CustomEvent } from '@to-do/analytics';
 import { initAnalytics } from '@to-do/analytics';

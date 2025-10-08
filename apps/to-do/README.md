@@ -105,13 +105,13 @@ import { useAnalytics, CustomEvent } from '@to-do/analytics';
 
 export default function MyComponent() {
   const { trackEvent } = useAnalytics();
-  
+
   const handleAction = () => {
     trackEvent(CustomEvent.TODO_CREATED, {
       todo_id: 123,
     });
   };
-  
+
   return <button onClick={handleAction}>Create</button>;
 }
 ```
@@ -126,7 +126,7 @@ Example:
 import { TToDo } from '@to-do/shared';
 
 const response = await fetch('http://localhost:3001/api/todos');
-const todos = await response.json() as TToDo[];
+const todos = (await response.json()) as TToDo[];
 ```
 
 ## Available Scripts

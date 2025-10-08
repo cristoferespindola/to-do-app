@@ -6,10 +6,7 @@ import rateLimit, { type RateLimitRequestHandler } from 'express-rate-limit';
  * @param max - Maximum requests per time window (default: 100)
  * @returns Rate limit middleware
  */
-const createRateLimiter = (
-  time = 15, 
-  max = 100
-): RateLimitRequestHandler => {
+const createRateLimiter = (time = 15, max = 100): RateLimitRequestHandler => {
   return rateLimit({
     windowMs: time * 60 * 1000,
     max,

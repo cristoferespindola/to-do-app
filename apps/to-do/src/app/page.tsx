@@ -1,17 +1,16 @@
 import { TToDo } from '@to-do/shared';
 import { PageContainer } from '@/components/PageContainer';
+import { TodoList } from '@/components/TodoList';
 
 export default async function Home() {
-  const response = await fetch('http://localhost:3001/api/todos');
-  const todos = await response.json() as TToDo[];
-  
+  const response = await fetch('http://localhost:3001/api/todos', {
+    cache: 'no-store', // Always fetch fresh data
+  });
+  const todos = (await response.json()) as TToDo[];
+
   return (
     <PageContainer title="Home - Todo List" path="/">
-      <div className="">
-        {todos.map((todo: TToDo) => (
-          <div key={todo.id}>{todo.title}</div>
-        ))}
-      </div>
+      <TodoList initialTodos={todos} />
     </PageContainer>
   );
 }

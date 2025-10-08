@@ -27,12 +27,14 @@ A modern, full-stack ToDo list application built with Next.js and Express in a m
 ## Technology Stack
 
 ### Frontend (`apps/to-do`)
+
 - **Framework:** [Next.js](https://nextjs.org/) (v15.5.4 with App Router)
 - **Language:** [TypeScript](https://www.typescriptlang.org/) (v5)
 - **Styling:** [Tailwind CSS](https://tailwindcss.com/) (v4)
 - **UI Components:** React 19
 
 ### Backend (`apps/to-do-api`)
+
 - **Framework:** [Express](https://expressjs.com/) (v5)
 - **Language:** [TypeScript](https://www.typescriptlang.org/) (v5.9.3)
 - **Database:** [PostgreSQL](https://www.postgresql.org/) (v14+)
@@ -43,16 +45,19 @@ A modern, full-stack ToDo list application built with Next.js and Express in a m
 ### Shared Packages
 
 #### `packages/shared`
+
 - **Purpose:** Shared TypeScript types and utilities
 - **Types:** `TToDo`, `TToDoCreate`, `TToDoUpdate`
 
 #### `packages/analytics`
+
 - **Purpose:** Google Analytics 4 integration
 - **Features:** React hooks, type-safe events, SSR support
 - **Hooks:** `usePageView`, `useAnalytics`, `useTrackEvent`
 - **Events:** Page views, custom todo events, user properties
 
 ### Build System
+
 - **Monorepo:** [Turborepo](https://turbo.build/)
 - **Package Manager:** [Yarn Workspaces](https://classic.yarnpkg.com/en/docs/workspaces/)
 
@@ -86,11 +91,13 @@ This will install dependencies for all workspaces (frontend, backend, and shared
 ### 3. Set Up PostgreSQL Database
 
 #### Start PostgreSQL (if using Homebrew on macOS):
+
 ```bash
 brew services start postgresql@14
 ```
 
 #### Create the database:
+
 ```bash
 psql -U $USER -d postgres -c "CREATE DATABASE todo_db;"
 ```
@@ -146,18 +153,21 @@ yarn dev
 ```
 
 This will start:
+
 - **Frontend**: http://localhost:3000
 - **Backend**: http://localhost:3001
 
 #### Option B: Run apps separately
 
 **Backend:**
+
 ```bash
 cd apps/to-do-api
 yarn dev
 ```
 
 **Frontend (in another terminal):**
+
 ```bash
 cd apps/to-do
 yarn dev
@@ -168,6 +178,7 @@ yarn dev
 ### Base URL: `http://localhost:3001/api`
 
 #### Get All Todos
+
 - **Endpoint:** `GET /todos`
 - **Response:**
   ```json
@@ -183,6 +194,7 @@ yarn dev
   ```
 
 #### Create Todo
+
 - **Endpoint:** `POST /todos`
 - **Request Body:**
   ```json
@@ -193,6 +205,7 @@ yarn dev
 - **Response:** Returns the created todo object
 
 #### Update Todo
+
 - **Endpoint:** `PUT /todos/:id`
 - **Request Body:**
   ```json
@@ -203,6 +216,7 @@ yarn dev
 - **Response:** Returns the updated todo object
 
 #### Delete Todo
+
 - **Endpoint:** `DELETE /todos/:id`
 - **Response:**
   ```json
@@ -290,10 +304,10 @@ export type TToDo = {
   completed?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
-}
+};
 
-export type TToDoCreate = Omit<TToDo, 'id' | 'createdAt' | 'updatedAt'>
-export type TToDoUpdate = Partial<TToDoCreate>
+export type TToDoCreate = Omit<TToDo, 'id' | 'createdAt' | 'updatedAt'>;
+export type TToDoUpdate = Partial<TToDoCreate>;
 ```
 
 **Usage Example:**
@@ -301,7 +315,7 @@ export type TToDoUpdate = Partial<TToDoCreate>
 ```typescript
 // Frontend
 import { TToDo } from '@to-do/shared';
-const todos = await response.json() as TToDo[];
+const todos = (await response.json()) as TToDo[];
 
 // Backend
 import { TToDo } from '@to-do/shared';
@@ -338,6 +352,7 @@ trackEvent(CustomEvent.TODO_CREATED, {
 ```
 
 **Available Events:**
+
 - Standard: `PAGE_VIEW`, `CLICK`, `FORM_SUBMIT`, `SEARCH`, etc.
 - Custom: `TODO_CREATED`, `TODO_COMPLETED`, `TODO_DELETED`, `TODO_UPDATED`
 

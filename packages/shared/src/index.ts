@@ -1,1 +1,1 @@
-export type { TToDo, TToDoCreate, TToDoUpdate } from './types/todos'
+export type { TToDo, TToDoCreate, TToDoUpdate } from './types/todos';

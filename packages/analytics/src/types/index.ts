@@ -6,7 +6,7 @@ export type GTagEventParams = {
   event_label?: string;
   value?: number;
   [key: string]: string | number | boolean | undefined;
-}
+};
 
 /**
  * Standard Google Analytics Events
@@ -46,7 +46,7 @@ export type PageViewParams = {
   page_title?: string;
   page_location?: string;
   page_path?: string;
-}
+};
 
 /**
  * Analytics configuration
@@ -55,7 +55,7 @@ export type AnalyticsConfig = {
   measurementId: string;
   debug?: boolean;
   disabled?: boolean;
-}
+};
 
 /**
  * Window gtag type definition

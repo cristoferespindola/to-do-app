@@ -1,9 +1,4 @@
-import type { 
-  AnalyticsConfig, 
-  AnalyticsEvent, 
-  GTagEventParams, 
-  PageViewParams 
-} from '../types';
+import type { AnalyticsConfig, AnalyticsEvent, GTagEventParams, PageViewParams } from '../types';
 
 /**
  * Analytics client class for managing Google Analytics
@@ -21,9 +16,7 @@ export class Analytics {
    */
   private isAvailable(): boolean {
     return (
-      typeof window !== 'undefined' &&
-      !this.config.disabled &&
-      typeof window.gtag === 'function'
+      typeof window !== 'undefined' && !this.config.disabled && typeof window.gtag === 'function'
     );
   }
 

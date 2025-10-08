@@ -7,7 +7,7 @@ type PageContainerProps = {
   children: ReactNode;
   title?: string;
   path?: string;
-}
+};
 
 /**
  * Client component wrapper that automatically tracks page views

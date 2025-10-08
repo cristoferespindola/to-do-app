@@ -7,10 +7,7 @@ import type { AnalyticsEvent, GTagEventParams } from '../types';
  * @param event - The event name to track
  * @param baseParams - Base parameters to include with every event
  */
-export function useTrackEvent(
-  event: AnalyticsEvent,
-  baseParams?: GTagEventParams
-) {
+export function useTrackEvent(event: AnalyticsEvent, baseParams?: GTagEventParams) {
   return useCallback(
     (additionalParams?: GTagEventParams) => {
       const params = { ...baseParams, ...additionalParams };

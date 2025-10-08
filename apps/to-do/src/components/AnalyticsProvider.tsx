@@ -7,16 +7,16 @@ type AnalyticsProviderProps = {
   children: ReactNode;
   measurementId?: string;
   debug?: boolean;
-}
+};
 
 /**
  * Provider component that initializes Google Analytics
  * Add this to your root layout to enable analytics throughout the app
  */
-export function AnalyticsProvider({ 
-  children, 
+export function AnalyticsProvider({
+  children,
   measurementId,
-  debug = false 
+  debug = false,
 }: AnalyticsProviderProps) {
   useEffect(() => {
     if (measurementId) {

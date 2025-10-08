@@ -6,7 +6,9 @@ const DB_HOST = process.env.DB_HOST || 'localhost';
 const DB_PORT = process.env.DB_PORT || '5432';
 const DB_NAME = process.env.DB_NAME || 'todo_db';
 
-export const db = new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`) 
+export const db = new Sequelize(
+  `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`
+);
 
 const testConnection = async () => {
   try {
@@ -15,6 +17,6 @@ const testConnection = async () => {
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
-}
+};
 
 testConnection();
